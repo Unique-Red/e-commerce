@@ -8,6 +8,21 @@ from .forms import SignUpForm
 from django import forms
 
 # Create your views here.
+
+def product(request, pk):
+    product = Product.objects.get(id=pk)
+    return render(request, 'product.html', {'product': product})
+
+def category(request, category):
+    category = category.replace('-', ' ')
+    try:
+        products = Product.objects.filter(category__name=category)
+        return render(request, 'category.html', {'products': products, 'category': category})
+    except:
+        messages.error(request, "Category does not exist")
+        products = None
+        return redirect('home')
+
 def home(request):
     products = Product.objects.all
     return render (request, 'home.html', {'products': products})
